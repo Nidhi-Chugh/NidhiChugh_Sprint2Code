@@ -1,0 +1,122 @@
+wallet-account.component.ts
+
+
+import { Component, OnInit } from '@angular/core';
+import {WalletAccountService} from '../wallet-account.service';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+
+@Component({
+  selector: 'app-wallet-account',
+  templateUrl: './wallet-account.component.html',
+  styleUrls: ['./wallet-account.component.css']
+})
+export class WalletAccountComponent implements OnInit 
+{
+  amount : number
+  accountId : number =41
+
+  constructor(private WalletAccountService: WalletAccountService) { }
+
+  ngOnInit(): void {
+  }
+  
+
+  addMoney()
+  { 
+    
+    this.WalletAccountService.addMoney(this.accountId,
+       this.amount).subscribe(
+      data=> {
+      console.log(data);
+      },
+      (error) => {
+      console.log(error);
+      }
+    );
+  }
+}
+
+**********************************************************************************************************
+
+wallet-account.component.html
+
+
+           <html>
+            <body>
+             <div class="jumbotron">
+               <h3 style="text-align: center;">Add Money to</h3>
+               <h1 style="text-align: center;" >Online Wallet</h1>
+               <h3 style="text-align: center;"> Available balance ?10000</h3>
+             </div>
+             <br>
+             <br>
+             <br>
+           
+             <div class="text-center">
+             </div>
+             <div class="container h-90">
+               <div class="row h-100 justify-content-center align-items-center">
+                 
+             <form  #f1="ngForm" method="get" (ngSubmit)="addMoney()" >
+             <div class="form-group">
+               <label for="amount"><b>Enter Amount:</b></label>
+              <input type="text" class="form-control col-sm-12"  [(ngModel)]="amount" name="amount">
+             </div>
+             <button type="submit" class="btn btn-info" style="align-items: center;">
+               <h1> Proceed to Add Money</h1>
+             </button>
+             
+             </form>
+           
+           </div>
+           </div>
+           </body>
+          </html>
+
+**********************************************************************************************************
+
+wallet-account.service.ts
+
+
+
+import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class WalletAccountService 
+{
+
+  private baseURL="http://localhost:8098"; 
+
+  constructor(private http:HttpClient){ } 
+  addMoney( accountId:number, amount:number): Observable<any>{
+    return this.http.get(`${this.baseURL+"/addMoney"}/${accountId}/${amount}`);
+  }
+
+  /*
+  addMoney( accountId:number, amount:number): Observable<any>{
+    return this.http.get(`${this.baseURL}` +`/addMoney/` +accountId+amount);
+  }*/
+
+  /*
+  addMoney( accountId:number, amount:number): Observable<any>{
+    return this.http.get(this.baseURL+"/addMoney/"+accountId+"/"+amount);
+  }*/
+}
+
+**********************************************************************************************************
+
+
+app.component.html
+
+
+<html>
+  <body>
+    <app-wallet-account></app-wallet-account>
+  </body>
+</html>
+
+**********************************************************************************************************
